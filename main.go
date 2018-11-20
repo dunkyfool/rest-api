@@ -14,6 +14,10 @@ type Status struct {
     ConcisedLog string  `json:"concisedLog,omitempty"`
 }
 
+type TestData struct {
+    IP          string  `json:"ip,omitempty"`
+}
+
 // main
 func main() {
     router := mux.NewRouter()
@@ -43,4 +47,15 @@ func GetStatus(w http.ResponseWriter, r *http.Request) {
 func TriggerScan(w http.ResponseWriter, r *http.Request) {
     params := mux.Vars(r)
     fmt.Println("[INFO] Scan ID: " + params["scanid"])
+
+    resp, err := http.Get("http://api.ipify.org?format=json")
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Println(resp)
+
+    var testData TestData
+    err = json.NewDecoder(resp.Body).Decode(&testData)
+    fmt.Println(testData)
 }
